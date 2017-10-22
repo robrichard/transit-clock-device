@@ -1,0 +1,10 @@
+{
+  "name": "node-rgb",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "bdf": "erkkah/BDF.js#master",
+    "node-rpi-rgb-led-matrix-adafruit": "^0.2.2"
+  }
+}
