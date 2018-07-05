@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "bdf": "erkkah/BDF.js#master",
+    "isomorphic-fetch": "^2.2.1",
     "node-rpi-rgb-led-matrix-adafruit": "^0.2.2"
   }
 }

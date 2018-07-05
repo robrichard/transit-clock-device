@@ -1,4 +1,7 @@
-var LedMatrix = require("node-rpi-rgb-led-matrix-adafruit");
+'use strict';
+
+require('isomorphic-fetch');
+const LedMatrix = require("node-rpi-rgb-led-matrix-adafruit");
 const BDF = require('bdf');
 const path = require('path');
 const matrix = new LedMatrix(32, 2);
@@ -18,8 +21,6 @@ function toArray(obj) {
     return array;
 }
 
-console.log(font.writeText('3'));
-
 function writeText(text, left, top, r, g, b) {
     // matrix.clear();
     const buffer = font.writeText(text);
@@ -34,12 +35,51 @@ function writeText(text, left, top, r, g, b) {
     });
 }
 
+const query = `
+{
+  displayBoard(stopName: "Hoboken") {
+    items {
+      name
+      minutesAway
+    }
+  }
+}
+`;
 
-setInterval(() => {
-    writeText('33rd 10 16 28', 0, 1, 255, 255, 255);
-    writeText('WTC   7 27 47', 0, 9, 0, 255, 255);
-    writeText('JSQ   6 18 30', 0, 17, 255, 0, 255);
-    writeText('NWK  14 34 54', 0, 25, 255, 255, 0);
-}, 1000);
+const body = JSON.stringify({query});
+const colors = [
+    [255, 255, 255],
+    [0, 255, 255],
+    [255, 0, 255],
+    [255, 255, 0]
+];
+
+
+setInterval(async () => {
+    try {
+        const res = await fetch('http://192.168.1.155:4567/graphql', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body
+        })
+
+        const {data} = await res.json();
+        data.displayBoard.items
+            .filter(i => !!i.name && i.minutesAway[0] < 100)
+            .forEach(({name, minutesAway}, i) => {
+            const text = `${name.padEnd(4)} ${minutesAway.map(m => m.toString().padStart(2)).join(' ')}`;
+            console.log('text', text);
+            writeText(text, 0, (i * 8) + 1, ...colors[i]);
+        });
+    } catch (e) {
+        console.error(e);
+        matrix.clear();
+    }
+}, 10000);
+
+
+
 
 // while(true) {}
