@@ -66,13 +66,17 @@ setInterval(async () => {
         })
 
         const {data} = await res.json();
-        data.displayBoard.items
-            .filter(i => !!i.name && i.minutesAway[0] < 100)
-            .forEach(({name, minutesAway}, i) => {
-            const text = `${name.padEnd(4)} ${minutesAway.map(m => m.toString().padStart(2)).join(' ')}`;
-            console.log('text', text);
-            writeText(text, 0, (i * 8) + 1, ...colors[i]);
-        });
+        for (let i = 0; i < 4; i++) {
+            if (data.displayBoard.items[i]) {
+                const {name, minutesAway} = data.displayBoard.items[i];
+                const text = `${name.padEnd(4)} ${minutesAway.map(m => m.toString().padStart(2)).join(' ')}`;
+                console.log('text', text);
+                writeText(text, 0, (i * 8) + 1, ...colors[i]);
+            } else {
+                // hack to clear row
+                writeText('                         ', 0, (i * 8) + 1, ...colors[i]);
+            }
+        }
     } catch (e) {
         console.error(e);
         matrix.clear();
