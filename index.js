@@ -73,7 +73,6 @@ setInterval(async () => {
             if (data.displayBoard.items[i]) {
                 const {name, minutesAway} = data.displayBoard.items[i];
                 const text = `${name.padEnd(4)} ${getMinutesAwayString(minutesAway)}`;
-                console.log('text', text);
                 writeText(text, 0, (i * 8) + 1, ...colors[i]);
             } else {
                 // hack to clear row
