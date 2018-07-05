@@ -54,6 +54,9 @@ const colors = [
     [255, 255, 0]
 ];
 
+function getMinutesAwayString(minutesAway) {
+    return minutesAway.map(m => m.toString().padStart(2)).join(' ');
+}
 
 setInterval(async () => {
     try {
@@ -69,7 +72,7 @@ setInterval(async () => {
         for (let i = 0; i < 4; i++) {
             if (data.displayBoard.items[i]) {
                 const {name, minutesAway} = data.displayBoard.items[i];
-                const text = `${name.padEnd(4)} ${minutesAway.map(m => m.toString().padStart(2)).join(' ')}`;
+                const text = `${name.padEnd(4)} ${getMinutesAwayString(minutesAway)}`;
                 console.log('text', text);
                 writeText(text, 0, (i * 8) + 1, ...colors[i]);
             } else {
